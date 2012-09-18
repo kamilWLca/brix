@@ -1,6 +1,7 @@
 // DrawProg.h : main header file for the DRAWPROG application
 //
 
+
 #if !defined(AFX_DRAWPROG_H__EC34D264_981B_11D3_A9AD_00001C21326E__INCLUDED_)
 #define AFX_DRAWPROG_H__EC34D264_981B_11D3_A9AD_00001C21326E__INCLUDED_
 
@@ -24,6 +25,13 @@
 // CDrawProgApp:
 // See DrawProg.cpp for the implementation of this class
 //
+/*@todo wxWidgets ******/
+#include "wx/wx.h"
+class INXDrawProgApp : public wxApp
+{
+public:
+    bool OnInit();
+};
 
 class CDrawProgApp : public CLabLgbBaseApp
 {
@@ -34,7 +42,7 @@ public:
 	//attributes
 	CMultiDocTemplate* pDocTemplate;
 	CMainFrame* pMainFrame;
-
+	
 	// Methods
 	CDocument* OpenProject(ProjectMetaData* pProjMData);
 	void CloseProject(Project* pProject);
@@ -76,10 +84,10 @@ public:
 
 };
 
-
 /////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_DRAWPROG_H__EC34D264_981B_11D3_A9AD_00001C21326E__INCLUDED_)
+

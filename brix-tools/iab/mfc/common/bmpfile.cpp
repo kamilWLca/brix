@@ -42,7 +42,20 @@ CSize Bitmap::Init(INXString FileName) {
 		return CSize(bmiHeader.biWidth-1,bmiHeader.biHeight-1);
 }
 
-
+int Bitmap::DrawGL(CDC* theDC,CPoint point) {
+	//temporary draw of the GL rectangles as the function blocks
+	drawGLRect((float)point.x,(float)point.y,(float)GetWidth(),(float)GetHeight());
+	return 0;
+}
+void Bitmap::drawGLRect(float x, float y, float width, float height){
+		glBegin(GL_POLYGON);
+		glColor3f(0.7, 0.5, 1); // light purple
+		glVertex2f(x, y);
+		glVertex2f(x, y + height);
+		glVertex2f(x + width, y + height);
+		glVertex2f(x + width, y);
+		glEnd();
+};
 int Bitmap::Draw(CDC* theDC,CPoint point) {
 	//BYTE *tmp=NULL;
 	// DWORD-align for display

@@ -6,6 +6,7 @@
 #include "DrawProg.h"
 #include "BlockOperations.h"
 #include "Porting_Classes/INXString.h"
+#include "Porting_Classes/INXObject.h"
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -89,7 +90,7 @@ INXObjList* BlockOperations::LoadBlock(INXString Info) {
 			if (strcmp(type,"BEGIN_BLOCK")==0) {
 				ConData *blob = new ConData;
 				blob->Load(&datafile);
-				encapsulated->AddTail((CObject*) blob);
+				encapsulated->AddTail((INXObject*) blob);
 			}
 			if(i>500)
 			{

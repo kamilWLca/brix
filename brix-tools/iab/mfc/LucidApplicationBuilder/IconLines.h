@@ -9,16 +9,18 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 #include <iostream>
+#include <list>
 #include "Porting_Classes/INXObjArray.h"
 #include "Porting_Classes/INXPoint.h"
 #include "Porting_Classes/INXSize.h"
 #include "Porting_Classes/INXRect.h"
 #include "Porting_Classes/INXString.h"
-
+#include "Porting_Classes/INXObject.h"
+#include <wx/glcanvas.h>
 
 using namespace std;
 
-class IconLines : public CObject
+class IconLines : public INXObject
 {
 public:
 	void Save(ostream * file) ;
@@ -34,6 +36,9 @@ public:
 	void DeleteNode(int iNodeNum);
 	void deleteAllNodes();
 	void Draw(CDC* theDC);
+	void DrawDC(CDC* theDC);
+	void DrawGL(CDC* theDC);
+	void DrawDCGL(CDC* theDC);
 	void Delete();
 	void Disconnect();
 	void setIDNum(long int _idNum);
@@ -60,7 +65,7 @@ public:
 	void DrawNode(CDC* pDC, INXPoint point);
 
 	int exist;
-	INXObjArray <CObject *>points;
+	INXObjArray <INXPoint*>points;
 	long int othericonid;
     int otherportno;
 	INXPoint otherportpoint;
@@ -79,6 +84,25 @@ private:
 	bool m_bDefineMonitor;
 	UINT m_iRtaTraceId;
 	int m_iSelSegmentNum;
+/*@todo OpenGL Line Functions */
+private:
+	//x,y co-ordinates need for 6 points to paint a line segment
+	float px1, px2, px3, px4, px5, px6;
+	float py1, py2, py3, py4, py5, py6;
+	//seting colors
+	float r, g, b;
+	//array to store co-ordinates of a bend
+	float curveCoord[24];
+
+	float x, y;
+private:
+	void setGLPoint(INXPoint pnt);
+	void setGLColor(float _r, float _g, float _b);
+	void drawGLLine(INXPoint currentPnt,INXPoint nextPoint, INXPoint endPoint);
+	void setPointForGLLine(std::list< INXPoint > _pointsList);
+	void drawLineSeg(float px1, float py1, float px2, float py2, float px3, 
+		float py3, float px4, float py4, float px5, float py5, float px6, float py6);
+	void drawBend(float x, float y, int a);
 };
 
 #endif // !defined(AFX_ICONLINES_H__C1041E81_B35E_11D8_A9B0_00055DD37FD7__INCLUDED_)

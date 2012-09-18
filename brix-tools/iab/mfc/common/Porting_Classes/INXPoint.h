@@ -32,15 +32,17 @@ public:
 	};
 	// constructors
 	INXPoint(): wxPoint(){
+		x = 0;
+		y = 0;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	}
 	INXPoint(int _x, int _y):wxPoint(_x,_y){
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	}
 
@@ -48,48 +50,48 @@ public:
 		x = pnt.x;
 		y = pnt.y;	
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	INXPoint(const CPoint &pnt){
 		x = pnt.x;
 		y = pnt.y;	
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	INXPoint (wxPoint &pnt){
 		x = pnt.x;
 		y = pnt.y;	 
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	INXPoint (wxSize &sz){
 		x = sz.x;
 		y = sz.y;	
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	void Offset(int xOff, int yOff){
 		x = x + xOff;
 		y = y + yOff;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	void SetPoint(int setX, int setY){
 		x = setX;
 		y = setY;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	INXPoint operator - (const wxPoint &pnt){
@@ -97,9 +99,9 @@ public:
 		tempPoint.x -= pnt.x;
 		tempPoint.y -= pnt.y;
 		#ifdef LEGACYINX
-	_point.x = 0;
-	_point.y = 0;
-#endif	
+			_point.x = x;
+			_point.y = y;
+		#endif	
 		return tempPoint;
 	};
 	INXPoint operator + (const wxPoint &pnt){
@@ -107,9 +109,9 @@ public:
 		tempPoint.x += pnt.x;
 		tempPoint.y += pnt.y;
 		#ifdef LEGACYINX
-	_point.x = 0;
-	_point.y = 0;
-#endif	
+			_point.x = x;
+			_point.y = y;
+		#endif	
 		return tempPoint;
 	};
 	INXPoint operator - (const wxSize &sz){
@@ -117,8 +119,8 @@ public:
 		tempPoint.x -= sz.x;
 		tempPoint.y -= sz.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 		return tempPoint;
 	};
@@ -129,8 +131,8 @@ public:
 		tempPoint.x += sz.x;
 		tempPoint.y += sz.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 		return tempPoint;
 	};
@@ -139,33 +141,33 @@ public:
 		x += pnt.x;
 		y += pnt.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	void operator +=(const wxSize &sz){
 		x += sz.x;
 		y += sz.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	void operator -=(const wxPoint &pnt){
 		x += pnt.x;
 		y += pnt.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
+			_point.x = x;
+			_point.y = y;
 		#endif	
 	};
 	void operator -=(const wxSize &sz){
 		x += sz.x;
 		y += sz.y;
 		#ifdef LEGACYINX
-			_point.x = 0;
-			_point.y = 0;
-		#endif	
+			_point.x = x;
+			_point.y = y;
+		#endif		
 	};
 };
 #endif

@@ -13,6 +13,8 @@
 #include "FileOperations.h"
 #include "BlockOperations.h"
 #include "GlobalFuncs_2.h"
+#include "Porting_Classes/INXObject.h"
+#include "wx/wx.h"
 
 #include <cmath>
 
@@ -220,8 +222,8 @@ int DEP::AddLine(INXPOSITION selectedIcon, int selectedPort, int selectedPortTyp
 		portOutType=selectedPortType;
 		portIn=selectedPort2;
 		portOut=selectedPort;
-		iconIn =(	ConData* ) condata->GetAt(selectedIcon2);
-		iconOut=(	ConData* ) condata->GetAt(selectedIcon);
+		iconIn =(ConData* ) condata->GetAt(selectedIcon2);
+		iconOut=(ConData* ) condata->GetAt(selectedIcon);
 	}
 	else
 	{
@@ -284,10 +286,9 @@ void DEP::AddNodes(INXPOSITION selectedIcon, int selectedPort, int selectedPortT
 int DEP::AddPort(ConData* blob, int iDataType, int iPortType, INXString portLabel) {
 	INXPoint point;
 
-
 	point = blob->GetIconPos();
 	INXObjArray<INXString>* funcName = new INXObjArray<INXString>;
-	CUIntArray* funcArg = new CUIntArray;
+	INXObjArray<unsigned int>* funcArg = new INXObjArray<unsigned int>;
 
 	if ((blob->inputport_num + blob->startport_num >= (MAXBLOCKPORTS))||(blob->outputport_num + blob->finishport_num >= (MAXBLOCKPORTS)))
 	{
@@ -306,13 +307,11 @@ int DEP::AddPort(ConData* blob, int iDataType, int iPortType, INXString portLabe
 	}
 	else if (iPortType == OUTPUTPORT) {
 
-
 		point = point + INXPoint(ENCAPS_ICON_WIDTH,30 + ((blob->finishport_num-1)*15 + blob->outputport_num*15));
 		blob->outputport[blob->outputport_num] = new Port(point, blob->outputport_num, iDataType, iPortType, portLabel, funcName, funcArg, 1, 0, 1, 0);
 		blob->outputport_num++;
 	}
 	else if (iPortType == STARTPORT) {
-
 
 		// add port
 		point = point + INXPoint(-6,10 + (15 * blob->startport_num));
@@ -337,7 +336,6 @@ int DEP::AddPort(ConData* blob, int iDataType, int iPortType, INXString portLabe
 			blob->outputport[i]->P.y = blob->outputport[i]->P.y + 15;
 		}
 		blob->finishport_num++;
-
 	}
 
 	blob->ResizeIcon();
@@ -1165,9 +1163,50 @@ void DEP::Draw(CDC * pDC, bool _onlyDrawAnim, int _toggleAnim) {
 		}
 	}
 }
+void DEP::DrawGL(CDC * pDC){
+	DrawGL(pDC,false,0);
+}
+void DEP::DrawGL(CDC * pDC, bool _onlyDrawAnim, int _toggleAnim){
+	
+#define mfcCode_DEP
+#ifdef mfcCode_DEP
 
+	INXPOSITION pos;
+	ConData* icondata;
+	CMainFrame* pFrame = (CMainFrame*)AfxGetApp()->m_pMainWnd;
+	Project* pProject = pFrame->m_wndProjectBar.m_cProjTree.GetProjectPtr(hItem);
 
+	if (!condata->IsEmpty()) {
+		for (pos = condata->GetHeadPosition();pos !=NULL;) {
+			icondata=((ConData *) condata->GetNext(pos));
 
+				icondata->DrawGL(pDC, _onlyDrawAnim, _toggleAnim);
+		}
+		if (_onlyDrawAnim) {
+			return;
+		}
+
+		// Once all the icons and ports have been drawn, draw the lines so that they are on top of icons
+		
+		UINT i;
+		for (pos = condata->GetHeadPosition();pos !=NULL;) {
+			icondata=((ConData *) condata->GetNext(pos));
+			for (i=0; i<icondata->inputport_num; i++) {
+				if (icondata->inputport[i]->tag == "") {
+					icondata->inputport[i]->line.setDefineMonitor(pProject->getDefineMonitors());
+					icondata->inputport[i]->line.DrawGL(pDC);
+				}
+			}
+			for (i=0; i<icondata->startport_num; i++) {
+				if (icondata->startport[i]->tag == "") {
+					icondata->startport[i]->line.setDefineMonitor(pProject->getDefineMonitors());
+					icondata->startport[i]->line.DrawGL(pDC);
+				}
+			}
+		}
+	}
+#endif
+}
 
 /*
 This is called to bring up a parameters dialog box, if the user clicks on an icon
@@ -1571,7 +1610,7 @@ void DEP::LoadProg(INXString Info) {
 		if (strcmp(type,"BEGIN_BLOCK")==0) {
 			ConData *blob=new ConData;
 			blob->Load(&datafile);
-			condata->AddTail((CObject*) blob);
+			condata->AddTail((INXObject*) blob);
 			id = blob->identnum;
 		} else
 		if (strcmp(type,"CanvasSizeXY")==0) {
@@ -2236,7 +2275,7 @@ void DEP::ResetAllDbgValues() {
 *: This could be converted to a streamble class etc.? and done automatically
 */
 void DEP::SaveProg(INXString Info) {
-	ofstream datafile(Info);
+	ofstream datafile((char *)Info);
 	//put an error trap
 	ConData *blob;
 	INXString tmp;
@@ -3160,7 +3199,7 @@ void DEP::swapPortData(Port* pPort1, Port* pPort2)
 {
 	INXPoint port1OffsetPoint, port2OffsetPoint;
 	INXString csTmpPortDesc;
-	CUIntArray *tmpFuncArg;
+	INXObjArray<unsigned int> *tmpFuncArg;
 	INXObjArray<INXString> *tmpFuncName;
 	bool tmpbPortVertical;
 	long int tmplocation;

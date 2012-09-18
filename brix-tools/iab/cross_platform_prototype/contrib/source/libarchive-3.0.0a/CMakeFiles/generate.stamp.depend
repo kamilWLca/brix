@@ -1,0 +1,67 @@
+# CMake generation dependency list for this directory.
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeLists.txt
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeFiles/CMakeSystem.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeFiles/CMakeCCompiler.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/Platform/Windows-cl.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeFiles/CMakeCPlatform.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeFiles/CMakeCXXPlatform.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/Platform/cl.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/CMakeFiles/CMakeRCCompiler.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CTest.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CTestTargets.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/DartConfiguration.tcl.in
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/AddTest28.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckCSourceRuns.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckFileOffsetBits.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckFuncs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckFunctionExists.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckHeaderDirent.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckTypeExists.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckIncludeFiles.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckLibraryExists.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckStructMember.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckSymbolExists.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/CheckTypeExists.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckTypeSize.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindZLIB.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindBZip2.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/FindLZMA.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindOpenSSL.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindLibXml2.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPkgConfig.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindEXPAT.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+Z:/temp/newlibarchive/libarchive-3.0.0a/build/cmake/config.h.in

@@ -16,14 +16,14 @@
 #include "Porting_Classes/INXRect.h"
 #include "Porting_Classes/INXString.h"
 #include "Porting_Classes/INXObjArray.h"
+#include "Porting_Classes/INXObject.h"
 
-
-class Port  : public CObject
+class Port  : public INXObject
 {
 public:
 	Port(int _userdefined); 
-	Port(INXPoint _P, UINT _portNum, int _dataType, int _portType, INXString _description, INXObjArray<INXString>* _funcName, CUIntArray* _funcArg, int _atomicFlag, bool bVerticalIn, int _userdefined, int _mandatoryFlag);
-	Port(UINT _portNum, int _portType, INXObjArray<INXString>* _funcName, CUIntArray* _funcArg, int _atomicFlag);
+	Port(INXPoint _P, unsigned int _portNum, int _dataType, int _portType, INXString _description, INXObjArray<INXString>* _funcName, INXObjArray<unsigned int>* _funcArg, int _atomicFlag, bool bVerticalIn, int _userdefined, int _mandatoryFlag);
+	Port(UINT _portNum, int _portType, INXObjArray<INXString>* _funcName, INXObjArray<unsigned int>* _funcArg, int _atomicFlag);
 	virtual ~Port();
 	INXPoint P;   // position
 	int porttype;   //0 input, 1 output, 2 Trig input, 3 Trig output
@@ -32,7 +32,7 @@ public:
 	int portNum; // port number
 	INXString description;
 	INXObjArray<INXString>* funcName;
-	CUIntArray* funcArg;
+	INXObjArray<unsigned int>* funcArg;
 	int connected;
 	IconLines line; //this is the input line (one only allowed)
 	long int location;
@@ -66,6 +66,8 @@ public:
 	int DisconnectLine();
 	void Draw(CDC* theDC);
 	void Draw(CDC* theDC, bool _onlyDrawAnim, int _toggleAnim);
+	void DrawGL(CDC* theDC);
+	void DrawGL(CDC* theDC, bool _onlyDrawAnim, int _toggleAnim);
 	int Move(INXPoint point);
 	void setLineID(long int _lineID);
 	void Save(ostream *);
@@ -74,7 +76,10 @@ public:
 
 private:
 	INXRect GetPortBitmapArea();
-	
+	void drawGLPort(INXPoint _position, int portState);
+	void setGLPortColor(float red, float green, float blue);
+private:
+	float r, g, b;
 };
 
 #endif // !defined(AFX_PORT_H__9E27DF60_B038_11D8_A9B0_00055DD37FD7__INCLUDED_)

@@ -5,6 +5,7 @@
 #include "ComponentMenuItem.h"
 #include "Porting_Classes/INXObjArray.h"
 #include "Porting_Classes/INXString.h"
+#include "Porting_Classes/INXObject.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // FunctionBlockTree dialog
@@ -66,12 +67,12 @@ private:
 	bool m_bDraggingIcon;
 	set<INXString> m_sL2LibMenuNames;
 	CImageList m_imageList; // image list used by the tree
-	INXObjArray<CObject *> m_rootMenuList; // list of ComponentMenuItems at root level of the menu tree
+	INXObjArray<INXObject *> m_rootMenuList; // list of ComponentMenuItems at root level of the menu tree
 	INXString m_styleLookup[99];
 	int m_maxStyle;
-	INXObjArray<CObject *> m_componentList; // list of m_ComponentOnTree_t to be placed on tree
+	INXObjArray<INXObject *> m_componentList; // list of m_ComponentOnTree_t to be placed on tree
 
-	struct ComponentOnTree_t : public CObject {
+	struct ComponentOnTree_t : public INXObject {
 		INXString iconName;
 		INXString menuNameL1;
 		INXString menuNameL2;

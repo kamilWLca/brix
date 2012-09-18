@@ -76,7 +76,7 @@ public:
 	char GetAt(unsigned int index) const{
 		return GetChar(index);
 	};
-	void SetAt(unsigned int index, unsigned char c){
+	void SetAt(unsigned int index, char c){
 		SetChar(index, c);
 		#ifdef LEGACYINX
 			_string = c_str();
@@ -85,14 +85,6 @@ public:
 	// Comparision
 	int CompareNoCase(const char *s){ // case insensetive
 		return  CmpNoCase(s);
-	};
-	// Extraction 
-	/* @todo using mfc CString to creatre the method*/
-	INXString SpanExcluding(const wxString &str){
-		const char *temp = str;
-		CString _str;
-		_str.SpanExcluding(temp);
-		return (INXString)_str;
 	};
 	// Other Conversions 
 //	void MakeUpper(){} inherits from parent
@@ -110,14 +102,14 @@ public:
 		 #ifdef LEGACYINX
 			_string = c_str();
 		#endif
-			return (INXString)*this;
+			return (INXString)c_str();
 	};
 	INXString TrimRight(){
 		 Trim(true);
 		 #ifdef LEGACYINX
 			_string = c_str();
 		#endif
-			return (INXString)*this;
+			return (INXString)c_str();
 	};
 	// Searching 
 	int Find(const unsigned char c){
@@ -169,10 +161,16 @@ public:
 		}return(int(strlen(s)));
 	};
 	/* @todo using mfc CString to creatre the method */
-	INXString Tokenize(INXString str, int pos){
-		char *temp = str;
+	INXString Tokenize(char* str, int pos){
 		CString _str;
-		_str.Tokenize(temp, pos);
+		_str = _str.Tokenize(str, pos);
+		return (INXString)_str;
+	};
+	// Extraction 
+	/* @todo using mfc CString to creatre the method*/
+	INXString SpanExcluding(const char* str){
+		CString _str = c_str();
+		_str = _str.SpanExcluding(str);
 		return (INXString)_str;
 	};
 };

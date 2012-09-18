@@ -5,10 +5,9 @@
 #include "stdafx.h"
 //#include "DrawProg.h"
 #include "IconLines.h"
-#include <list>
 #include <cmath>
 #include "../common/LucidConstants.h"
-
+#include "Porting_Classes/INXObject.h"
 
 
 #ifdef _DEBUG
@@ -39,6 +38,19 @@ IconLines::IconLines()
 	m_bDefineMonitor = FALSE;
 	m_iRtaTraceId = 0;
 	m_iSelSegmentNum = -1;
+
+	/*OpenGL initialise*/
+	x = 0;
+	y = 0;
+	r = 0; 
+	g = 0;
+	b = 0; 
+	px1 = 0; px2 = 0; px3 = 0; px4 = 0; px5 = 0; px6 = 0;
+	py1 = 0; py2 = 0; py3 = 0; py4 = 0; py5 = 0; py6 = 0;
+	float temp[24] = {1.00,0.998,0.990,0.978,0.961,0.940,0.914,0.883,0.848,0.809,0.766,
+		0.719,0.669,0.616,0.559,0.500,0.438,0.375,0.309,0.242,0.174,0.105,0.035,0.000};
+	for(int i = 0; i < 24; i++) curveCoord[i] = temp[i];
+
 }
 
 IconLines::~IconLines()
@@ -57,21 +69,21 @@ void IconLines::SetEndPoints(INXPoint *start, INXPoint *end,long int _othericon,
 	tmp = start;
 	int nopoints=points.GetUpperBound();
 	if (nopoints<1) {
-	points.SetAtGrow(0,(CObject*) start) ;//new INXPoint(start)); ..insert incase any mid points exist
-	points.Add((CObject*) end) ;//new INXPoint(end));
+	points.SetAtGrow(0,start) ;//new INXPoint(start)); ..insert incase any mid points exist
+	points.Add( end) ;//new INXPoint(end));
 	}
 	else if (nopoints<2) {
 	//delete points[0]; // remove memory? Memory leak
     //if (points[0]!=NULL) {
 	//   delete points[0];
 	//}
-	points[0]=((CObject*) start) ;//new INXPoint(start));
-	points.Add((CObject*) end) ;//new INXPoint(end));
+	points[0]= start ;//new INXPoint(start));
+	points.Add(end) ;//new INXPoint(end));
 	}
 	else {
-	points[0]=((CObject*) start) ;//new INXPoint(start));
+	points[0]= start;//new INXPoint(start));
 	//points[nopoints]=((CObject*) end) ; // original code
-	points.Add((CObject*) end) ;//new INXPoint(end));
+	points.Add(end) ;//new INXPoint(end));
 	}
 
 	othericonid=_othericon;
@@ -168,13 +180,13 @@ void IconLines::AddNode(INXPoint cpNodePt, int iNodeNum) {
 	if (iNodeNum <= 0 || iNodeNum >= points.GetUpperBound()) {
 		return;
 	}
-	points.InsertAt(iNodeNum, (CObject*) new INXPoint(cpNodePt));
+	points.InsertAt(iNodeNum, new INXPoint(cpNodePt));
 }
 
 // Function that adds a node to the array of points
 void IconLines::addNode(INXPoint _node) {
 	nodeCount++;
-	points.InsertAt(nodeCount, (CObject*) new INXPoint(_node));
+	points.InsertAt(nodeCount, new INXPoint(_node));
 }
 
 // Function that edits a node
@@ -276,14 +288,15 @@ void IconLines::Load(istream * file) {
 		ReadPoint.x=atoi(temp);
 		*file >> ReadPoint.y;
 		nodeCount++;
-		points.SetAtGrow(nodeCount, (CObject*) new INXPoint(ReadPoint));
+		points.SetAtGrow(nodeCount, new INXPoint(ReadPoint));
 	} while (1);
 	//points.Add(NULL); // add NULL end point
 }
 
 // routine to draw a set of points as a ziggy line
 // routine to draw a set of points as a ziggy line
-void IconLines::Draw(CDC* theDC) {
+void IconLines::Draw(CDC* theDC){
+
 	INXPoint begin,end;
 	INXPoint p0, p1, p2; // Pts that form each respective corner
 	int iLineSeg = 0; 
@@ -300,7 +313,6 @@ void IconLines::Draw(CDC* theDC) {
 	dashpurplepen.CreatePen(PS_DASH,2,RGB(128,0,255));
 
 	//COLORREF colour;
-
 	if (!exist) return;
 
 	int nLineSegs = points.GetUpperBound(); // do an error check here
@@ -343,11 +355,8 @@ void IconLines::Draw(CDC* theDC) {
 				}
 			}
 		}
-
 		p0 = (INXPoint) *( (INXPoint *) points.GetAt(0) );
 		p1 = (INXPoint) *( (INXPoint *) points.GetAt(1) );
-
-
 		if(nLineSegs > 1)
 		{
 			// Need at least 2 segs to form a corner!			
@@ -482,9 +491,930 @@ void IconLines::Draw(CDC* theDC) {
 
 	// restore original pen
 	theDC->SelectObject(originalPen);
-			
+		
 }
+void IconLines::DrawDC(CDC* theDC){
+		INXPoint begin,end;
+	INXPoint p0, p1, p2; // Pts that form each respective corner
+	int iLineSeg = 0; 
 
+	CPen bluepen, redpen, greenpen, yellowpen, dashpen, dashorangepen, blackpen, purplepen, dashpurplepen;
+	bluepen.CreatePen(PS_SOLID,1,RGB(0,0,255));
+	redpen.CreatePen(PS_SOLID,1,RGB(255,0,0));
+	greenpen.CreatePen(PS_SOLID,1,RGB(0,255,0));
+	yellowpen.CreatePen(PS_SOLID,1,RGB(225,225,0));
+	dashpen.CreatePen(PS_SOLID,1,RGB(128,128,128)); //dashpen.CreatePen(PS_DASH,1,RGB(0,0,0));
+	dashorangepen.CreatePen(PS_DASH,2,RGB(255,128,0));
+	blackpen.CreatePen(PS_SOLID,1,RGB(0,0,0));
+	purplepen.CreatePen(PS_SOLID,2,RGB(128,0,255));
+	dashpurplepen.CreatePen(PS_DASH,2,RGB(128,0,255));
+
+	//COLORREF colour;
+
+	if (!exist) return;
+
+	int nLineSegs = points.GetUpperBound(); // do an error check here
+
+	if ( nLineSegs < 0 ) return;		
+	
+	// Control lines are drawn with a dashed line
+	// *** For some reason print preview comes up with a debug assertion failure when using
+	// SelectObject. Also, does not print out dashed lines. For the time being only have dashed 
+	// lines and coloured lines in the normal view mode.
+
+	CPen* originalPen;
+	originalPen = theDC->GetCurrentPen();
+
+	if (show) {
+		if (portType == STARTPORT) {
+			if (!theDC->IsPrinting() && dbgEvent && m_bDbgMonitorSel) {
+				theDC->SelectObject(dashorangepen);
+			}
+			else {
+				if (!theDC->IsPrinting() && m_bDbgMonitorSel && m_bDefineMonitor) {
+					theDC->SelectObject(dashpurplepen);
+				}
+				else {
+					theDC->SelectObject(dashpen);
+				}
+			}
+		}
+		else {
+			if (!theDC->IsPrinting() && m_bDbgMonitorSel && m_bDefineMonitor) {
+				theDC->SelectObject(purplepen);
+			}
+			else {
+				switch(dataType) {
+				case 0: theDC->SelectObject(yellowpen); break;
+				case 1: theDC->SelectObject(bluepen); break;		
+				case 2:	theDC->SelectObject(greenpen); break;
+				case 3:	theDC->SelectObject(redpen); break;
+				default: theDC->SelectObject(blackpen); break;	
+				}
+			}
+		}
+		p0 = (INXPoint) *( (INXPoint *) points.GetAt(0) );
+		p1 = (INXPoint) *( (INXPoint *) points.GetAt(1) );
+
+		if(nLineSegs > 1){
+			// Need at least 2 segs to form a corner!			
+			
+			// list to store points in.  Easiest to store them first, then draw them after
+			std::list< INXPoint > pntList;
+
+			pntList.clear();
+
+			float v0[2], v1[2];					// line segment vectors (x,y)
+			float v0Mag, v1Mag;					//line seg lengths
+			float fCosTheta;					//cosine of angle between segs
+			float NEARLY_RIGHT_ANGLE = 80.0;	// Chamfer corners only of near a right-angle
+
+			float PI = 4.0 * atan2( 1.0, 1.0 );
+			float fLimitCos = cos( NEARLY_RIGHT_ANGLE * PI / 180 ); 
+			// angles not nearly right have bigger cos than this
+
+			int CHAMFER_LENGTH = 5;  // Do not chamfer very short lines
+
+			p2 = (INXPoint) *( (INXPoint *) points.GetAt(2) );
+
+			pntList.push_back( p0 );
+//if (portType == STARTPORT) {
+			// Loop through corners
+			while ( iLineSeg <= nLineSegs-2 ){
+
+				// Get x,y vector of each line seg
+				v0[0] = p1.x  - p0.x;
+				v1[0] = p2.x  - p1.x;
+
+				v0[1] = p1.y  - p0.y;
+				v1[1] = p2.y  - p1.y;
+
+				// Calc magnitudes (line seg lengths!)
+				v0Mag = sqrt( v0[0] * v0[0] + v0[1] * v0[1] );
+				v1Mag = sqrt( v1[0] * v1[0] + v1[1] * v1[1] );
+
+				// Normalise to unit length
+				v0[0] /= v0Mag;
+				v0[1] /= v0Mag;
+
+				v1[0] /= v1Mag;
+				v1[1] /= v1Mag;
+
+				// Form dot product to find (cos of) theta
+				fCosTheta = v0[0] * v1[0] + v0[1] * v1[1];
+
+				// Add chamfer if appropriate
+				bool bNearRtAngle = fabs( fCosTheta ) < fLimitCos;
+				bool bLinesLongEnuff = ( (v0Mag > 2 * CHAMFER_LENGTH ) && (v1Mag > 2 * CHAMFER_LENGTH )   );
+				bool bDoChamfer = bNearRtAngle && bLinesLongEnuff;
+		
+
+				if( bDoChamfer ){
+
+					INXPoint p1Before, p1After;
+
+					// go back along 1st seg from corner, forward along 2nd seg
+					p1Before.x = p1.x - CHAMFER_LENGTH*v0[0];
+					p1Before.y = p1.y - CHAMFER_LENGTH*v0[1];
+
+					p1After.x = p1.x + CHAMFER_LENGTH*v1[0];
+					p1After.y = p1.y + CHAMFER_LENGTH*v1[1];
+
+					pntList.push_back( p1Before );
+					pntList.push_back( p1After );
+				} else {
+					pntList.push_back( p1 );
+				}
+				iLineSeg++;
+				// Don't access past end of 'points' contents at end of loop
+				if( iLineSeg <= nLineSegs-2 )
+				{
+					p0 = p1;
+					p1 = p2;
+					p2 = (INXPoint) *( (INXPoint *) points.GetAt(iLineSeg + 2) );
+				}
+			} // while ( iLineSeg < nLineSegs-2 )
+			// add final point
+			pntList.push_back( p2 );
+			std::list< INXPoint >::iterator it = pntList.begin();
+			// reflect points on line in y-axis for printing
+			if (theDC->IsPrinting()) {
+				it->y = -1 * (it->y);
+			}
+
+			// Draw the lines themselves
+			theDC->MoveTo( *it );
+			while(++it !=  pntList.end() )
+			{
+				// reflect points on line in y-axis for printing
+				if (theDC->IsPrinting()) {
+					it->y = -1 * (it->y);
+				}
+				theDC->LineTo( *it );
+			}
+
+		} else { // if !( nLineSegs > 1)
+			
+			if (theDC->IsPrinting()) {
+				p0.y = -p0.y;
+				p1.y = -p1.y;
+			}
+			theDC->MoveTo( p0 );
+			theDC->LineTo( p1 );
+		} //( nLineSegs > 1)
+
+	} // if (show) 
+	// DrawNodes on straight lines
+	for (iLineSeg=0; iLineSeg<nLineSegs-2; iLineSeg++) {
+		p0 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg));
+		p1 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+1));
+		p2 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+2));
+		if ((p0.x == p1.x && p1.x == p2.x) || (p0.y == p1.y && p1.y == p2.y)) {
+			DrawNode(theDC, p1);
+		}
+	}
+	// restore original pen
+	theDC->SelectObject(originalPen);
+}
+void IconLines::DrawGL(CDC* theDC){
+	
+#define testOpenGLline
+#ifdef testOpenGLline
+	INXPoint begin,end;
+	INXPoint p0, p1, p2; // Pts that form each respective corner
+	int iLineSeg = 0; 
+	CPen bluepen, redpen, greenpen, yellowpen, dashpen, dashorangepen, blackpen, purplepen, dashpurplepen;
+	bluepen.CreatePen(PS_SOLID,1,RGB(0,0,255));
+	redpen.CreatePen(PS_SOLID,1,RGB(255,0,0));
+	greenpen.CreatePen(PS_SOLID,1,RGB(0,255,0));
+	yellowpen.CreatePen(PS_SOLID,1,RGB(225,225,0));
+	dashpen.CreatePen(PS_SOLID,1,RGB(128,128,128)); //dashpen.CreatePen(PS_DASH,1,RGB(0,0,0));
+	dashorangepen.CreatePen(PS_DASH,2,RGB(255,128,0));
+	blackpen.CreatePen(PS_SOLID,1,RGB(0,0,0));
+	purplepen.CreatePen(PS_SOLID,2,RGB(128,0,255));
+	dashpurplepen.CreatePen(PS_DASH,2,RGB(128,0,255));
+	//COLORREF colour;
+	if (!exist) return;
+	int nLineSegs = points.GetUpperBound(); // do an error check here
+	if ( nLineSegs < 0 ) return;		
+	
+	// Control lines are drawn with a dashed line
+	// *** For some reason print preview comes up with a debug assertion failure when using
+	// SelectObject. Also, does not print out dashed lines. For the time being only have dashed 
+	// lines and coloured lines in the normal view mode.
+
+	CPen* originalPen;
+	//originalPen = theDC->GetCurrentPen();
+
+	if (show) {
+		/**** selecting pen get rid of DC ***/
+		if (portType == STARTPORT) {
+			if (/*!theDC->IsPrinting() &&*/ dbgEvent && m_bDbgMonitorSel) {
+				//theDC->SelectObject(dashorangepen);
+			}
+			else {
+				if (/*!theDC->IsPrinting() &&*/ m_bDbgMonitorSel && m_bDefineMonitor) {
+					//theDC->SelectObject(dashpurplepen);
+				}
+				else {
+					//theDC->SelectObject(dashpen);
+				}
+			}
+		}
+		else {
+			if (/*!theDC->IsPrinting() &&*/ m_bDbgMonitorSel && m_bDefineMonitor) {
+				//theDC->SelectObject(purplepen);
+			}
+			else {
+				switch(dataType) {
+				case 0:// theDC->SelectObject(yellowpen); //mfc select pen
+					setGLColor(1,1,0);// set lines colour for gl view
+					break;
+				case 1: //theDC->SelectObject(bluepen); 
+					setGLColor(0,0,1);// set lines colour for gl view
+					break;		
+				case 2:	//theDC->SelectObject(greenpen);
+					setGLColor(0,1,0);// set lines colour for gl view
+					break;
+				case 3:	//theDC->SelectObject(redpen); 
+					setGLColor(1,0,0);// set lines colour for gl view
+					break;
+				default: //theDC->SelectObject(blackpen); 
+					setGLColor(0,0,0);// set lines colour for gl view
+					break;	
+				}
+			}
+		}
+		p0 = (INXPoint) *( (INXPoint *) points.GetAt(0) );
+		p1 = (INXPoint) *( (INXPoint *) points.GetAt(1) );
+
+		if(nLineSegs > 1)
+		{
+			// Need at least 2 segs to form a corner!			
+			
+			// list to store points in.  Easiest to store them first, then draw them after
+			std::list< INXPoint > pntList;
+
+			pntList.clear();
+
+			float v0[2], v1[2];					// line segment vectors (x,y)
+			float v0Mag, v1Mag;					//line seg lengths
+			float fCosTheta;					//cosine of angle between segs
+			float NEARLY_RIGHT_ANGLE = 80.0;	// Chamfer corners only of near a right-angle
+
+			float PI = 4.0 * atan2( 1.0, 1.0 );
+			float fLimitCos = cos( NEARLY_RIGHT_ANGLE * PI / 180 ); 
+			// angles not nearly right have bigger cos than this
+
+			int CHAMFER_LENGTH = 10;  // Do not chamfer very short lines
+
+			p2 = (INXPoint) *( (INXPoint *) points.GetAt(2) );
+
+			pntList.push_back( p0 );
+//if (portType == STARTPORT) {
+			// Loop through corners
+			while ( iLineSeg <= nLineSegs-2 )
+			{
+
+				// Get x,y vector of each line seg
+				v0[0] = p1.x  - p0.x;
+				v1[0] = p2.x  - p1.x;
+
+				v0[1] = p1.y  - p0.y;
+				v1[1] = p2.y  - p1.y;
+
+				// Calc magnitudes (line seg lengths!)
+				v0Mag = sqrt( v0[0] * v0[0] + v0[1] * v0[1] );
+				v1Mag = sqrt( v1[0] * v1[0] + v1[1] * v1[1] );
+
+				// Normalise to unit length
+				v0[0] /= v0Mag;
+				v0[1] /= v0Mag;
+
+				v1[0] /= v1Mag;
+				v1[1] /= v1Mag;
+
+				// Form dot product to find (cos of) theta
+				fCosTheta = v0[0] * v1[0] + v0[1] * v1[1];
+
+				// Add chamfer if appropriate
+				bool bNearRtAngle = fabs( fCosTheta ) < fLimitCos;
+				bool bLinesLongEnuff = ( (v0Mag > 2 * CHAMFER_LENGTH ) && (v1Mag > 2 * CHAMFER_LENGTH )   );
+				bool bDoChamfer = bNearRtAngle && bLinesLongEnuff;
+				if( 0) {//bDoChamfer ){
+					INXPoint p1Before, p1After;
+					// go back along 1st seg from corner, forward along 2nd seg
+					p1Before.x = p1.x - CHAMFER_LENGTH*v0[0];
+					p1Before.y = p1.y - CHAMFER_LENGTH*v0[1];
+
+					p1After.x = p1.x + CHAMFER_LENGTH*v1[0];
+					p1After.y = p1.y + CHAMFER_LENGTH*v1[1];
+
+					pntList.push_back( p1Before );
+					pntList.push_back( p1After );
+				} else {
+					pntList.push_back( p1 );
+				}
+				iLineSeg++;
+				// Don't access past end of 'points' contents at end of loop
+				if( iLineSeg <= nLineSegs-2 )
+				{
+					p0 = p1;
+					p1 = p2;
+					p2 = (INXPoint) *( (INXPoint *) points.GetAt(iLineSeg + 2) );
+				}
+			} // while ( iLineSeg < nLineSegs-2 )
+			// add final point
+			pntList.push_back( p2 );
+			//draw line function
+			setPointForGLLine(pntList);
+		} else { // if !( nLineSegs > 1)
+			
+			/*if (theDC->IsPrinting()) {
+				p0.y = -p0.y;
+				p1.y = -p1.y;
+			}
+			theDC->MoveTo( p0 ); replace with gl
+			theDC->LineTo( p1 );*/
+			std::list< INXPoint > _otherPoints;
+			_otherPoints.push_back(p0);
+			_otherPoints.push_back(p1);
+			setPointForGLLine(_otherPoints);
+		} //( nLineSegs > 1)
+	} // if (show) 
+	// DrawNodes on straight lines
+	for (iLineSeg=0; iLineSeg<nLineSegs-2; iLineSeg++) {
+		p0 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg));
+		p1 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+1));
+		p2 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+2));
+		if ((p0.x == p1.x && p1.x == p2.x) || (p0.y == p1.y && p1.y == p2.y)) {
+			DrawNode(theDC, p1);
+		}
+	}
+	// restore original pen
+	//theDC->SelectObject(originalPen);	
+#endif
+}
+/*@todo line drawing openGLfunctions*/
+//set the reference point
+
+//set the color of the line
+void IconLines::setGLColor(float _r, float _g, float _b){
+		r = _r;
+		g = _g;
+		b = _b; 
+	};
+void IconLines::setPointForGLLine(std::list< INXPoint > _pointsList){
+	float nx1, nx2, nx3, nx4, nx5, nx6;
+	float ny1, ny2, ny3, ny4, ny5, ny6;
+	int a, i = 0;
+	std::list< INXPoint >::iterator it = _pointsList.begin();
+	nx3 = (*it).x; /* get his from *it.x *it.y */ 
+	ny3 = (*it).y;
+	it++;
+	i++;
+	nx4 = (*it).x;
+	ny4 = (*it).y;
+	it++;
+	i++;
+	
+	while(i <  _pointsList.size() + 1){	
+		//vertical
+		if (nx3 == nx4){
+			//calculate extra points
+			nx1 = (nx3 + 2);
+			ny1 = ny3;
+			nx2 = (nx4 + 2);
+			ny2 = ny4;
+			nx5 = (nx3 - 2);
+			ny5 = ny3;
+			nx6 = nx4 - 2;
+			ny6 = ny4;
+		
+			//line going down
+			if (ny3 > ny4){
+				//draw line seg to start of bend
+				drawLineSeg(nx1,ny1,nx2,(ny2 + 10),nx3,ny3,nx4,(ny4 + 10),nx5,ny5,nx6,(ny6 + 10));
+				//get next point
+				nx3 = nx4;
+				ny3 = ny4;
+				if(it != _pointsList.end()){
+					nx4 = (*it).x;
+					ny4 = (*it).y;
+					it++;
+				}
+				i++;
+				if(i < _pointsList.size() + 1){
+					//draw bend
+					if(nx3 > nx4){
+						a = 4;
+						drawBend(nx3,ny3,a);
+						nx3 = nx3 - 10; 
+					}else{
+						a = 2;
+						drawBend(nx3,ny3,a);
+						nx3 = nx3 + 10;
+					}
+				}
+			}else {
+				//line going up
+				drawLineSeg(nx1,ny1,nx2,(ny2 - 10),nx3,ny3,nx4,(ny4 - 10),nx5,ny5,nx6,(ny6 - 10));
+				//get next point
+				nx3 = nx4;
+				ny3 = ny4;
+				if(it != _pointsList.end()){
+					nx4 = (*it).x;
+					ny4 = (*it).y;
+					it++;
+				}
+				i++;
+				if(i < _pointsList.size() + 1){
+					if(nx3 > nx4){
+						a = 1;
+						drawBend(nx3,ny3,a);
+						nx3 = nx3 - 10;
+					}else{
+						a = 3;
+						drawBend(nx3,ny3,a);
+						nx3 = nx3 + 10;
+					}
+				}
+			}
+		}else if (ny3 == ny4) { //horizontal
+	
+			nx1 = nx3;
+			ny1 = (ny3 + 2);
+			nx2 = nx4;
+			ny2 = (ny4 + 2);
+			nx5 = nx3;
+			ny5 = (ny3 - 2);
+			nx6 = nx4;
+			ny6 = (ny4 - 2);
+			//line to left
+			if(nx3 > nx4){
+				drawLineSeg(nx1,ny1,(nx2+10),ny2,nx3,ny3,(nx4+10),ny4,nx5,ny5,(nx6+10),ny6);
+
+					//get next point
+					nx3 = nx4;
+					ny3 = ny4;
+				if(it != _pointsList.end()){
+					nx4 = (*it).x;
+					ny4 = (*it).y;
+					it++;
+				}
+				i++;
+				if(i < _pointsList.size() + 1){
+					if(ny3 > ny4){
+						a = 3;
+						drawBend(nx3,ny3,a);
+						ny3 = ny3 - 10;
+					}else{
+						a = 2;
+						drawBend(nx3,ny3,a);
+						ny3 = ny3 + 10;
+					}	
+				}
+			}else{//line to right
+				drawLineSeg(nx1,ny1,(nx2-10),ny2,nx3,ny3,(nx4-10),ny4,nx5,ny5,(nx6-10),ny6);
+				
+					//get next point
+					nx3 = nx4;
+					ny3 = ny4;
+				if(it != _pointsList.end()){
+					nx4 = (*it).x;
+					ny4 = (*it).y;
+					it++;
+				}
+				i++;
+				if(i < _pointsList.size() + 1){
+					if(ny3 > ny4){
+						a = 1;
+						drawBend(nx3,ny3,a);
+						ny3 = ny3 - 10;
+					}else{
+						a = 4;
+						drawBend(nx3,ny3,a);
+						ny3 = ny3 + 10;
+					}
+				}
+			}
+		}
+	}
+}
+//draw the line
+void IconLines::drawGLLine(INXPoint currentPnt,INXPoint nextPoint, INXPoint endPoint){
+	
+};
+
+//function to draw a line segment. takes in co-ordinates, stores them in a vertex array and draws a using triangle strips.
+void IconLines::drawLineSeg(float px1, float py1, float px2, float py2, float px3, float py3, float px4, float py4, float px5, float py5, float px6, float py6){
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+		//array for vertices
+		float para_vertex[]=
+		{ 
+			px1,py1,
+			px2,py2,
+			px3,py3,
+			px4,py4,
+			px5,py5,
+			px6,py6
+		};
+		//array for colours. Line blended from white to black and back to white to make line smooth.
+		float para_color[]=
+		{ 
+			1,1,1,
+			1,1,1,
+			r,g,b,
+			r,g,b,
+			1,1,1,
+			1,1,1
+		};
+		glVertexPointer(2, GL_FLOAT, 0, para_vertex);
+		glColorPointer(3, GL_FLOAT, 0, para_color);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+}
+//function to draw a 90 degree bend using a series of line segments. Two paramaters change the position of the bend on the screen.
+void IconLines::drawBend(float x, float y, int a){
+		float st = 12;//outer radius
+		float sm = 10;//middle radius
+		float sb = 8;//inner radius
+		int i;
+		int j;
+		int k = 1;//changes how many points we use to draw a bend
+	
+		if (a == 1){
+			//places the bend in the correct position
+			x = x - sm;
+			y = y - sm;
+			i = 0;
+			j = 24;
+			//++
+			//calculate the points to draw the first line segment.
+			px1 = x + (curveCoord[i] * st);
+			py1 = y + (curveCoord[j] * st);
+			px2 = x + (curveCoord[i] * st);
+			py2 = y + (curveCoord[j] * st);
+			px3 = x + (curveCoord[i] * sm);
+			py3 = y + (curveCoord[j] * sm);
+			px4 = x + (curveCoord[i] * sm);
+			py4 = y + (curveCoord[j] * sm);
+			px5 = x + (curveCoord[i] * sb);
+			py5 = y + (curveCoord[j] * sb);
+			px6 = x + (curveCoord[i] * sb);
+			py6 = y + (curveCoord[j] * sb);
+
+			i =  i + k;//move to the next coordinate. dependant on k
+			j = j - k;
+			//call the function to paint the first segment of the line.
+			drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+
+			//calculate the points of the next line segments and paint with the draw function.
+			while (j >= 0){ 
+				px1 = px2; //some points reused so no need to calculate again
+				py1 = py2;
+				px2 = x + (curveCoord[i] * st);
+				py2 = y + (curveCoord[j] * st);
+				px3 = px4;
+				py3 = py4;
+				px4 = x + (curveCoord[i] * sm);
+				py4 = y + (curveCoord[j] * sm);
+				px5 = px6;
+				py5 = py6;
+				px6 = x + (curveCoord[i] * sb);
+				py6 = y + (curveCoord[j] * sb);
+
+				i = i + k;
+				j = j - k;
+	
+				drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			}
+ 			px4 = px4 + sm;
+		}else if (a == 2){
+	
+			x = x + sm;
+			y = y + sm;
+			i = 0;
+			j = 24;
+			//--
+			//calculate the points to draw the first line segment.
+			px1 = x + (-1.0 * curveCoord[i] * st);
+			py1 = y + (-1.0 * curveCoord[j] * st);
+			px2 = x + (-1.0 * curveCoord[i] * st);
+			py2 = y + (-1.0 * curveCoord[j] * st);
+			px3 = x + (-1.0 * curveCoord[i] * sm);
+			py3 = y + (-1.0 * curveCoord[j] * sm);
+			px4 = x + (-1.0 * curveCoord[i] * sm);
+			py4 = y + (-1.0 * curveCoord[j] * sm); 
+			px5 = x + (-1.0 * curveCoord[i] * sb);
+			py5 = y + (-1.0 * curveCoord[j] * sb);
+			px6 = x + (-1.0 * curveCoord[i] * sb);
+			py6 = y + (-1.0 * curveCoord[j] * sb);
+
+			i = i + k;//move to the next coordinate. dependant on k
+			j = j - k;
+			//call the function to paint the first segment of the line.
+			drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			//calculate the points of the next line segments and paint with the draw function.
+			while (j >= 0){ 
+				px1 = px2; //some points reused so no need to calculate again
+				py1 = py2;
+				px2 = x + (-1.0 * curveCoord[i] * st);
+				py2 = y + (-1.0 * curveCoord[j] * st);
+				px3 = px4;
+				py3 = py4;
+				px4 = x + (-1.0 * curveCoord[i] * sm);
+				py4 = y + (-1.0 * curveCoord[j] * sm);
+				px5 = px6;
+				py5 = py6;
+				px6 = x + (-1.0 * curveCoord[i] * sb);
+				py6 = y + (-1.0 * curveCoord[j] * sb);
+
+				i = i + k;
+				j = j - k;
+				drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			}
+			px4 = px4 - sm;
+		}else if (a == 3) {
+			//-+
+			x = x + sm;//places the bend in the correct position
+			y = y - sm;
+			i = 0;
+			j = 24;
+			//calculate the points to draw the first line segment.
+			px1 = x + (-1.0 * curveCoord[i] * st);
+			py1 = y + (curveCoord[j] * st);
+			px2 = x + (-1.0 * curveCoord[i] * st);
+			py2 = y + (curveCoord[j] * st);
+			px3 = x + (-1.0 * curveCoord[i] * sm);
+			py3 = y + (curveCoord[j] * sm);
+			px4 = x + (-1.0 * curveCoord[i] * sm);
+			py4 = y + (curveCoord[j] * sm); 
+			px5 = x + (-1.0 * curveCoord[i] * sb);
+			py5 = y + (curveCoord[j] * sb);
+			px6 = x + (-1.0 * curveCoord[i] * sb);
+			py6 = y + (curveCoord[j] * sb);
+
+			i =  i + k;//move to the next coordinate. dependant on k
+			j = j - k;
+			//call the function to paint the first segment of the line.
+			drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+	
+			//calculate the points of the next line segments and paint with the draw function.
+			while (j >= 0){ 
+			// for (int ii=0;ii<=24;ii+=k) {
+				px1 = px2; //some points reused so no need to calculate again
+				py1 = py2;
+				px2 = x + (-1.0 * curveCoord[i] * st);
+				py2 = y + (curveCoord[j] * st);
+				px3 = px4;
+				py3 = py4;
+				px4 = x + (-1.0 * curveCoord[i] * sm);
+				py4 = y + (curveCoord[j] * sm);
+				px5 = px6;
+				py5 = py6;
+				px6 = x + (-1.0 * curveCoord[i] * sb);
+				py6 = y + (curveCoord[j] * sb);
+				i = i + k;
+				j = j - k;
+				drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			}
+			px4 = px4 - sm;
+		}else if (a == 4) { 
+			//+-
+			x = x - sm;//places the bend in the correct position
+			y = y + sm;
+
+			i = 0;
+			j = 24;
+			//calculate the points to draw the first line segment.
+			px1 = x + (curveCoord[i] * st);
+			py1 = y + (-1.0 * curveCoord[j] * st);
+			px2 = x + (curveCoord[i] * st);
+			py2 = y + (-1.0 * curveCoord[j] * st);
+			px3 = x + (curveCoord[i] * sm);
+			py3 = y + (-1.0 * curveCoord[j] * sm);
+			px4 = x + (curveCoord[i] * sm);
+			py4 = y + (-1.0 * curveCoord[j] * sm);
+			px5 = x + (curveCoord[i] * sb);
+			py5 = y + (-1.0 * curveCoord[j] * sb);
+			px6 = x + (curveCoord[i] * sb);
+			py6 = y + (-1.0 * curveCoord[j] * sb);
+
+			i =  i + k;//move to the next coordinate. dependant on k
+			j = j - k;
+			//call the function to paint the first segment of the line.
+			drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			//calculate the points of the next line segments and paint with the draw function.
+			while (j >= 0){ 
+			// for (int ii=0;ii<=24;ii+=k) {
+				px1 = px2; //some points reused so no need to calculate again
+				py1 = py2;
+
+				px2 = x + (curveCoord[i] * st);
+				py2 = y + (-1.0 * curveCoord[j] * st);					
+				px3 = px4;
+				py3 = py4;
+				px4 = x + (curveCoord[i] * sm);
+				py4 = y + (-1.0 * curveCoord[j] * sm);
+				px5 = px6;
+				py5 = py6;
+				px6 = x + (curveCoord[i] * sb);
+				py6 = y + (-1.0 * curveCoord[j] * sb);
+				i = i + k;
+				j = j - k;
+				drawLineSeg(px1,py1,px2,py2,px3,py3,px4,py4,px5,py5,px6,py6);
+			}
+			px4 = px4 + sm;
+		}
+	}
+void IconLines::DrawDCGL(CDC* theDC){
+	INXPoint begin,end;
+	INXPoint p0, p1, p2; // Pts that form each respective corner
+	int iLineSeg = 0; 
+
+	CPen bluepen, redpen, greenpen, yellowpen, dashpen, dashorangepen, blackpen, purplepen, dashpurplepen;
+	bluepen.CreatePen(PS_SOLID,1,RGB(0,0,255));
+	redpen.CreatePen(PS_SOLID,1,RGB(255,0,0));
+	greenpen.CreatePen(PS_SOLID,1,RGB(0,255,0));
+	yellowpen.CreatePen(PS_SOLID,1,RGB(225,225,0));
+	dashpen.CreatePen(PS_SOLID,1,RGB(128,128,128)); //dashpen.CreatePen(PS_DASH,1,RGB(0,0,0));
+	dashorangepen.CreatePen(PS_DASH,2,RGB(255,128,0));
+	blackpen.CreatePen(PS_SOLID,1,RGB(0,0,0));
+	purplepen.CreatePen(PS_SOLID,2,RGB(128,0,255));
+	dashpurplepen.CreatePen(PS_DASH,2,RGB(128,0,255));
+
+	//COLORREF colour;
+
+	if (!exist) return;
+
+	int nLineSegs = points.GetUpperBound(); // do an error check here
+
+	if ( nLineSegs < 0 ) return;		
+	
+	// Control lines are drawn with a dashed line
+	// *** For some reason print preview comes up with a debug assertion failure when using
+	// SelectObject. Also, does not print out dashed lines. For the time being only have dashed 
+	// lines and coloured lines in the normal view mode.
+
+	CPen* originalPen;
+	originalPen = theDC->GetCurrentPen();
+
+	if (show) {
+		if (portType == STARTPORT) {
+			if (!theDC->IsPrinting() && dbgEvent && m_bDbgMonitorSel) {
+				theDC->SelectObject(dashorangepen);
+			}
+			else {
+				if (!theDC->IsPrinting() && m_bDbgMonitorSel && m_bDefineMonitor) {
+					theDC->SelectObject(dashpurplepen);
+				}
+				else {
+					theDC->SelectObject(dashpen);
+				}
+			}
+		}
+		else {
+			if (!theDC->IsPrinting() && m_bDbgMonitorSel && m_bDefineMonitor) {
+				theDC->SelectObject(purplepen);
+			}
+			else {
+				switch(dataType) {
+				case 0: theDC->SelectObject(yellowpen); break;
+				case 1: theDC->SelectObject(bluepen); break;		
+				case 2:	theDC->SelectObject(greenpen); break;
+				case 3:	theDC->SelectObject(redpen); break;
+				default: theDC->SelectObject(blackpen); break;	
+				}
+			}
+		}
+		p0 = (INXPoint) *( (INXPoint *) points.GetAt(0) );
+		p1 = (INXPoint) *( (INXPoint *) points.GetAt(1) );
+
+		if(nLineSegs > 1){
+			// Need at least 2 segs to form a corner!			
+			
+			// list to store points in.  Easiest to store them first, then draw them after
+			std::list< INXPoint > pntList;
+
+			pntList.clear();
+
+			float v0[2], v1[2];					// line segment vectors (x,y)
+			float v0Mag, v1Mag;					//line seg lengths
+			float fCosTheta;					//cosine of angle between segs
+			float NEARLY_RIGHT_ANGLE = 80.0;	// Chamfer corners only of near a right-angle
+
+			float PI = 4.0 * atan2( 1.0, 1.0 );
+			float fLimitCos = cos( NEARLY_RIGHT_ANGLE * PI / 180 ); 
+			// angles not nearly right have bigger cos than this
+
+			int CHAMFER_LENGTH = 5;  // Do not chamfer very short lines
+
+			p2 = (INXPoint) *( (INXPoint *) points.GetAt(2) );
+
+			pntList.push_back( p0 );
+//if (portType == STARTPORT) {
+			// Loop through corners
+			while ( iLineSeg <= nLineSegs-2 ){
+
+				// Get x,y vector of each line seg
+				v0[0] = p1.x  - p0.x;
+				v1[0] = p2.x  - p1.x;
+
+				v0[1] = p1.y  - p0.y;
+				v1[1] = p2.y  - p1.y;
+
+				// Calc magnitudes (line seg lengths!)
+				v0Mag = sqrt( v0[0] * v0[0] + v0[1] * v0[1] );
+				v1Mag = sqrt( v1[0] * v1[0] + v1[1] * v1[1] );
+
+				// Normalise to unit length
+				v0[0] /= v0Mag;
+				v0[1] /= v0Mag;
+
+				v1[0] /= v1Mag;
+				v1[1] /= v1Mag;
+
+				// Form dot product to find (cos of) theta
+				fCosTheta = v0[0] * v1[0] + v0[1] * v1[1];
+
+				// Add chamfer if appropriate
+				bool bNearRtAngle = fabs( fCosTheta ) < fLimitCos;
+				bool bLinesLongEnuff = ( (v0Mag > 2 * CHAMFER_LENGTH ) && (v1Mag > 2 * CHAMFER_LENGTH )   );
+				bool bDoChamfer = bNearRtAngle && bLinesLongEnuff;
+		
+
+				if( bDoChamfer ){
+
+					INXPoint p1Before, p1After;
+
+					// go back along 1st seg from corner, forward along 2nd seg
+					p1Before.x = p1.x - CHAMFER_LENGTH*v0[0];
+					p1Before.y = p1.y - CHAMFER_LENGTH*v0[1];
+
+					p1After.x = p1.x + CHAMFER_LENGTH*v1[0];
+					p1After.y = p1.y + CHAMFER_LENGTH*v1[1];
+
+					pntList.push_back( p1Before );
+					pntList.push_back( p1After );
+				} else {
+					pntList.push_back( p1 );
+				}
+				iLineSeg++;
+				// Don't access past end of 'points' contents at end of loop
+				if( iLineSeg <= nLineSegs-2 )
+				{
+					p0 = p1;
+					p1 = p2;
+					p2 = (INXPoint) *( (INXPoint *) points.GetAt(iLineSeg + 2) );
+				}
+			} // while ( iLineSeg < nLineSegs-2 )
+			// add final point
+			pntList.push_back( p2 );
+			std::list< INXPoint >::iterator it = pntList.begin();
+			// reflect points on line in y-axis for printing
+			if (theDC->IsPrinting()) {
+				it->y = -1 * (it->y);
+			}
+
+			// Draw the lines themselves
+			theDC->MoveTo( *it );
+			while(++it !=  pntList.end() )
+			{
+				// reflect points on line in y-axis for printing
+				if (theDC->IsPrinting()) {
+					it->y = -1 * (it->y);
+				}
+				theDC->LineTo( *it );
+			}
+
+		} else { // if !( nLineSegs > 1)
+			
+			if (theDC->IsPrinting()) {
+				p0.y = -p0.y;
+				p1.y = -p1.y;
+			}
+			theDC->MoveTo( p0 );
+			theDC->LineTo( p1 );
+		} //( nLineSegs > 1)
+
+	} // if (show) 
+	// DrawNodes on straight lines
+	for (iLineSeg=0; iLineSeg<nLineSegs-2; iLineSeg++) {
+		p0 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg));
+		p1 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+1));
+		p2 = (INXPoint) *((INXPoint *) points.GetAt(iLineSeg+2));
+		if ((p0.x == p1.x && p1.x == p2.x) || (p0.y == p1.y && p1.y == p2.y)) {
+			DrawNode(theDC, p1);
+		}
+	}
+	// restore original pen
+	theDC->SelectObject(originalPen);
+}
 // this is called for all the lines connected as inputs to a function block
 /*
 void IconLines::Move(INXPoint point) {
@@ -620,7 +1550,6 @@ void IconLines::MoveOutNode(INXPoint relative_point) {
 				//nodeNext->x = nodeNext->x - relative_point.x; 
 			}
 		}
-	
 	}
 	nodeCount = points.GetUpperBound(); // update with the possibly new data
 }
@@ -806,7 +1735,6 @@ int IconLines::GetLineSegment(const INXPoint cpPoint)
 			iSegmentNum = j;
 		}
 	}
-
 	return iSegmentNum;
 }
 
@@ -866,10 +1794,8 @@ bool IconLines::IsSegmentsAligned(const int iSegmentNum1, const int iSegmentNum2
 
 }
 
-void IconLines::DrawNode(CDC *pDC, INXPoint point)
-{
+void IconLines::DrawNode(CDC *pDC, INXPoint point){
 	INXPoint tmpPoint = point;
-
 	// Draw an 'X'
 	tmpPoint.Offset(-5,-5);
 	pDC->MoveTo(tmpPoint);

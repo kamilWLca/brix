@@ -15,6 +15,7 @@ using namespace std;
 #include "string.h"
 #include "Porting_Classes/INXObjArray.h"
 
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -287,6 +288,134 @@ void ConData::Draw(CDC * theDC, bool _onlyDrawAnim, int _toggleAnim) {
 		for (UINT i=0;i<finishport_num;i++) ((Port*)(finishport[i]))->Draw(theDC, _onlyDrawAnim, _toggleAnim);
 		
 	}
+}
+void ConData::DrawGL(CDC * theDC){
+	DrawGL(theDC, false, 0);
+}
+void ConData::DrawGL(CDC * theDC, bool _onlyDrawAnim, int _toggleAnim){
+
+#define mfcCode_CON
+#ifdef mfcCode_CON
+	INXRect highlightRect;
+	CPen highlightpen;
+	COLORREF oldTxtColor;
+	INXString csValue;
+	highlightpen.CreatePen(PS_DASH,1,RGB(0,255,0));
+	if (m_iShow) {
+		if (!_onlyDrawAnim) {
+			highlightRect.TopLeft().x = rectangle.TopLeft().x - 1;
+			highlightRect.TopLeft().y = rectangle.TopLeft().y - 1;
+			highlightRect.BottomRight().x = rectangle.BottomRight().x + 2;
+			highlightRect.BottomRight().y = rectangle.BottomRight().y + 2;
+			if (selected) {
+				theDC->SelectObject(highlightpen);
+				theDC->Rectangle(highlightRect);
+			}
+			/* example of code used to restore original pen
+			CPen* originalPen;
+			originalPen = theDC->GetCurrentPen();
+			theDC->SelectObject(nullpen);
+			theDC->SelectObject(originalPen);
+			*/
+				//BYTE* bitmapbuf=bitmap;
+				//
+				//if (theDC!=NULL) {
+				//	UINT m_widthDW=0;
+				//	INXRect clientRect;
+				//	GetClientRect(clientRect);
+					
+					// Center It
+			//@todo
+			INXPoint _point(rectangle.TopLeft().x, rectangle.TopLeft().y);
+			bitmap.DrawGL(theDC,_point);
+			// define font for constants
+			LOGFONT logFont;
+			// pitch size is 8
+			/*if (theDC->IsPrinting()) {
+				logFont.lfHeight = -MulDiv(8, theDC->GetDeviceCaps(LOGPIXELSY), 432);
+			}
+			else {
+				logFont.lfHeight = -MulDiv(8, theDC->GetDeviceCaps(LOGPIXELSY), 72);
+			}
+			logFont.lfWidth = 0;
+			logFont.lfEscapement = 0;
+			logFont.lfOrientation = 0;
+			logFont.lfWeight = FW_NORMAL;
+			logFont.lfItalic = 0;
+			logFont.lfUnderline = 0;
+			logFont.lfStrikeOut = 0;
+			logFont.lfCharSet = ANSI_CHARSET;
+			logFont.lfOutPrecision = OUT_DEFAULT_PRECIS;
+			logFont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+			logFont.lfQuality = PROOF_QUALITY;
+			logFont.lfPitchAndFamily = VARIABLE_PITCH | FF_ROMAN;
+			strcpy_s(logFont.lfFaceName, "Arial");
+			CFont font;
+			font.CreateFontIndirect(&logFont);
+			CFont* oldFont = theDC->SelectObject(&font);
+			int oldBkMode = theDC->GetBkMode();
+			theDC->SetBkMode(1);	// set to transparent background
+*/
+/*			// display constant values
+			if (m_csIconType.Find("const_") != -1 || m_csIconType == INT_COMP || m_csIconType == REAL_COMP || m_csIconType == INT_GREATER_THAN ||
+				m_csIconType == REAL_GREATER_THAN || m_csIconType == INT_GREATER_THAN_EQUALS || m_csIconType == REAL_GREATER_THAN_EQUALS) {
+				if (iconParam[1]->value == "_") {
+					csValue = "";
+				}
+				else {
+					csValue = iconParam[1]->value;
+				}
+				if (theDC->IsPrinting()) {
+
+					theDC->TextOut(rectangle.TopLeft().x+15,rectangle.BottomRight().y+23,(CString&)csValue.Left(13));
+				}
+				else {
+					theDC->TextOut(rectangle.TopLeft().x+15,rectangle.BottomRight().y-23,(CString&)csValue.Left(13));
+				}
+			}
+			else if(m_csIconType == "STATE")
+			{
+				if (theDC->IsPrinting()) {
+					theDC->TextOut(rectangle.TopLeft().x+20,rectangle.BottomRight().y+35,(CString&)iconParam[1]->value.Left(13));
+				}
+				else {
+					theDC->TextOut(rectangle.TopLeft().x+20,rectangle.BottomRight().y-35,(CString&)iconParam[1]->value.Left(13));
+				}
+			}
+			*/
+			// display description (instance name)
+			INXPoint point=rectangle.TopLeft();
+			//oldTxtColor = theDC->GetTextColor();
+			//theDC->SetTextColor(RGB(0,0,255));
+			// printing uses th MM_LOENGLISH mapping mode
+			/*
+			if (theDC->IsPrinting()) {
+				theDC->TextOut(rectangle.TopLeft().x+7,rectangle.BottomRight().y-1,(CString&)description.Left(15));
+				if (description.GetLength()>15) {
+					theDC->TextOut(rectangle.TopLeft().x+7,rectangle.BottomRight().y-15,(CString&)description.Mid(15,15));
+				}
+			}
+			else {
+				theDC->TextOut(rectangle.TopLeft().x+7,rectangle.BottomRight().y+1,(CString&)description.Left(15));
+				if (description.GetLength()>15) {
+					theDC->TextOut(rectangle.TopLeft().x+7,rectangle.BottomRight().y+15,(CString&)description.Mid(15,15));
+				}
+			}
+			theDC->SetTextColor(oldTxtColor);
+
+			// display title
+			DrawTitle(theDC);
+			theDC->SetBkMode(oldBkMode);
+		*/
+		}	
+	// Disable drawing ports temporarly
+		for (UINT i=0;i<inputport_num;i++) ((Port*)(inputport[i]))->DrawGL(theDC, _onlyDrawAnim, _toggleAnim);
+		for (UINT i=0;i<outputport_num;i++) ((Port*)(outputport[i]))->DrawGL(theDC, _onlyDrawAnim, _toggleAnim);
+		for (UINT i=0;i<startport_num;i++) ((Port*)(startport[i]))->DrawGL(theDC, _onlyDrawAnim, _toggleAnim);
+		for (UINT i=0;i<finishport_num;i++) ((Port*)(finishport[i]))->DrawGL(theDC, _onlyDrawAnim, _toggleAnim);
+
+	}
+#endif
 }
 
 /*
@@ -901,7 +1030,7 @@ void ConData::readFromIDFFile(INXString filepath, INXPoint point) {
 		// and create new instances of funcName and funcArg arrays
 		funcInd = 0;
 		funcName = new INXObjArray<INXString>;
-		funcArg = new CUIntArray;
+		funcArg = new INXObjArray<unsigned int>;
 		
 		vPortKeysVec.clear();
 		GetIniKeys(portSection, filepath, vPortKeysVec);
@@ -1358,7 +1487,7 @@ void ConData::readFromCDFFile(INXString filepath, INXPoint point) {
 				// and create new instances of funcName and funcArg arrays
 				funcInd = 0;
 				funcName = new INXObjArray<INXString>;
-				funcArg = new CUIntArray;
+				funcArg = new INXObjArray<unsigned int>;
 
 				// read next node
 				ret = xmlTextReaderRead(reader);

@@ -66,7 +66,7 @@ void FunctionBlockSubstitution::connectDraggee()
 	INXString csPortDesc;
 	INXPoint newPoint;
 	Port* tmpPort;
-	CUIntArray *tmpDraggeeFuncArg, *tmpDroppeeFuncArg;
+	INXObjArray<unsigned int> *tmpDraggeeFuncArg, *tmpDroppeeFuncArg;
 	INXObjArray<INXString>* tmpDraggeeFuncName, *tmpDroppeeFuncName;
 
 	for (UINT i=0; i<m_Draggee->startport_num; i++) {

@@ -25,27 +25,9 @@ extern char workDir[WORK_DIR_SIZE];
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CDrawProgDoc
-
-IMPLEMENT_DYNCREATE(CDrawProgDoc, CDocument)
-
-BEGIN_MESSAGE_MAP(CDrawProgDoc, CDocument)
-	//{{AFX_MSG_MAP(CDrawProgDoc)
-	ON_COMMAND(ID_FILE_SAVE, OnFileSave)
-	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
-	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, OnUpdateFileSaveAs)
-	ON_UPDATE_COMMAND_UI(ID_NEWSUBSYSTEM, OnUpdateNewsubsystem)
-	ON_COMMAND(ID_NEWSUBSYSTEM, OnNewsubsystem)
-	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, OnUpdateFileSave)
-	ON_UPDATE_COMMAND_UI(ID_SAVE_PROJECT, OnUpdateSaveProject)
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
 // CDrawProgDoc construction/destruction
 
-CDrawProgDoc::CDrawProgDoc()
-{
+CDrawProgDoc::CDrawProgDoc(){
 	// TODO: add one-time construction code here
 	closing = FALSE;
 	pFrame = (CMainFrame*)AfxGetApp()->m_pMainWnd;
@@ -144,8 +126,6 @@ BOOL CDrawProgDoc::OnNewDocument()
 	return TRUE;
 }
 */
-
-
 /////////////////////////////////////////////////////////////////////////////
 // CDrawProgDoc serialization
 
@@ -182,7 +162,7 @@ BOOL CDrawProgDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 
 	// Extract filename
-	filename = lpszPathName;
+	filename = (INXString)lpszPathName;
 	//filename = filename.SpanExcluding(".");
 	filename.MakeReverse();
 	filename = filename.SpanExcluding("\\");
@@ -219,7 +199,7 @@ BOOL CDrawProgDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 	// Create DEP, load and initialise
 	pDEP = pProject->AddDEP();
-	pDEP->LoadProg(lpszPathName);
+	pDEP->LoadProg((INXString)lpszPathName);
 	pDEP->InitTagLists();
 	pDEP->depFilename = filename;
 	// Populate project tree if opening a project. Uses the loaded DEP to populate the tree

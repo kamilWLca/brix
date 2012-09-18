@@ -9,8 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include <afxinet.h>
-
-class FTP : public CObject  
+#include "Porting_Classes/INXObject.h"
+class FTP : public INXObject  
 {
 public:
 	FTP();

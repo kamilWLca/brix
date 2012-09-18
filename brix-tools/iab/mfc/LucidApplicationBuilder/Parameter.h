@@ -12,6 +12,7 @@
 #include "ParameterStore.h"
 #include "Porting_Classes/INXString.h"
 #include "Porting_Classes/INXObjArray.h"
+#include "Porting_Classes/INXObject.h"
 
 #include <fstream>
 using namespace std;
@@ -19,7 +20,7 @@ using namespace std;
 
 class ParameterStore;
 
-class Parameter : public CObject  
+class Parameter : public INXObject  
 {
 public:
 	// constructors

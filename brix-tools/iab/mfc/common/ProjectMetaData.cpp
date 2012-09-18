@@ -695,7 +695,6 @@ LucidErrEnum ProjectMetaData::showOpenProjectDialog()
 		// subtract 1 for the '/' between the project dir and project file name
 		int iLen = csProjectPathName.GetLength() - csProjectFileName.GetLength() - 1;
 		m_csProjectDir = csProjectPathName.Left(iLen);
-
 		// By convention, chop off the '.lpj' extension.
 		m_csProjectName = csProjectFileName.Left( csProjectFileName.GetLength() - 4);
 

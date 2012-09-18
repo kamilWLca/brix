@@ -8,6 +8,8 @@
 #include "BlockOperations.h"
 #include <Windows.h>
 #include <cassert>
+#include "Porting_Classes/INXObject.h"
+#include "Porting_Classes/INXObjArray.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -69,7 +71,7 @@ void SODL::WriteSODL(INXString sodlfile) {
 	// a port is not connected. Could use a CArray of type int, but this gives a smaller range
 	// of line IDs than using a CUIntArray. Using such an array means -1 is stored as 4294967295.
 	// This value should never be reached.
-	CUIntArray lineType;
+	INXObjArray<unsigned int> lineType;
 	CArray<long,long> lineID;
 	vector<Group> vGroups;
 	TagProjMetaSupportData_t tagData;
@@ -462,7 +464,7 @@ void SODL::Copy2Flattened() {
 			if (strcmp(type,"BEGIN_BLOCK")==0) {
 				blob = new ConData;
 				blob->Load(&datafile);
-				flattened->AddTail((CObject*) blob);
+				flattened->AddTail((INXObject*) blob);
 				id = blob->identnum;
 			} else {
 				blankcount++;
@@ -971,7 +973,7 @@ void SODL::AssignLineID2OtherPort(ConData *blob, int portType, int portNum, long
 	if ( (blob2 = GetFlatIconFromID(othericonid)) == NULL)
 	{
 		INXString message;
-		message.Format("Missing component linked to %s ID %d.\nThe Application may not work as expected.\nPlease seek assistance from nCapsa.\nContinue?", (LPCSTR)blob->description, blob->identnum);
+		message.Format("Missing component linked to %s ID %d.\nThe Application may not work as expected.\nPlease seek assistance from nCapsa.\nContinue?", blob->description, blob->identnum);
 		if(stop_checking==0)
 			response = AfxMessageBox(message ,MB_YESNO);
 

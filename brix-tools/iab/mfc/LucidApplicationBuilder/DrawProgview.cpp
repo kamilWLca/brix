@@ -60,6 +60,9 @@ using namespace std;
 #include <archive_entry.h>
 #include <fcntl.h>
 
+//include openGL tools and wxWidgets tools
+#include "wx/wx.h"
+#include <wx/glcanvas.h>
 
 #define CURL_WRITE_BUFFER_SIZE 12000
 
@@ -72,6 +75,84 @@ static char THIS_FILE[] = __FILE__;
 // global variable declared in CDrawProgApp
 extern char workDir[WORK_DIR_SIZE];
 //bool CDrawProgView::c_bSendAllToTargetHasOccurred;
+
+
+/*@todo wx seperate window setup*/
+#define testingGLRending
+#ifdef testingGLRending
+DEP *glDEP;
+CDC *glTempDC;
+void Initialize(){
+	glOrtho(0,500,500,0,0.0f,100.0f);
+	glClearDepth(1);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();	
+}
+class wxGLCanvasSubClass: public wxGLCanvas {
+        void Render();
+public:
+    wxGLCanvasSubClass(wxFrame* parent);
+    void Paintit(wxPaintEvent& event);
+protected:
+    DECLARE_EVENT_TABLE()
+};
+BEGIN_EVENT_TABLE(wxGLCanvasSubClass, wxGLCanvas)
+    EVT_PAINT    (wxGLCanvasSubClass::Paintit)
+END_EVENT_TABLE()
+ 
+wxGLCanvasSubClass::wxGLCanvasSubClass(wxFrame *parent)
+:wxGLCanvas(parent, wxID_ANY,  wxDefaultPosition, wxDefaultSize, 0, wxT("GLCanvas")){
+  //  int argc = 1;
+    //char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
+}
+
+void wxGLCanvasSubClass::Paintit(wxPaintEvent& WXUNUSED(event)){
+    Render();
+}
+ 
+void wxGLCanvasSubClass::Render(){
+    SetCurrent();
+    wxPaintDC(this);
+	Initialize();
+	//set background
+	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glDEP->DrawGL(glTempDC);
+	glFlush();
+    SwapBuffers();
+}
+ 
+class MyApp: public wxApp
+{
+    virtual bool OnInit();
+    wxGLCanvas * MyGLCanvas;
+};
+IMPLEMENT_APP_NO_MAIN(MyApp)
+
+bool MyApp::OnInit(){
+    wxFrame *frame = new wxFrame((wxFrame *)NULL, -1,  wxT("Hello GL World"), wxPoint(50,50), wxSize(500,500));
+     MyGLCanvas = new wxGLCanvasSubClass(frame);
+    frame->Show(TRUE);
+    return TRUE;
+}
+#endif
+// CDrawProgDoc
+
+IMPLEMENT_DYNCREATE(CDrawProgDoc, CDocument)
+
+BEGIN_MESSAGE_MAP(CDrawProgDoc, CDocument)
+	//{{AFX_MSG_MAP(CDrawProgDoc)
+	ON_COMMAND(ID_FILE_SAVE, OnFileSave)
+	ON_COMMAND(ID_FILE_SAVE_AS, OnFileSaveAs)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE_AS, OnUpdateFileSaveAs)
+	ON_UPDATE_COMMAND_UI(ID_NEWSUBSYSTEM, OnUpdateNewsubsystem)
+	ON_COMMAND(ID_NEWSUBSYSTEM, OnNewsubsystem)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, OnUpdateFileSave)
+	ON_UPDATE_COMMAND_UI(ID_SAVE_PROJECT, OnUpdateSaveProject)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
 
 bool CDrawProgView::bHasConnectionToEHS = false;
 
@@ -302,7 +383,7 @@ void CDrawProgView::init() {
 	copyFlag = FALSE;
 	lock = FALSE;
 	lib = -1;
-	 //create pen types
+	//create pen types
 	redpen.CreatePen(PS_SOLID,1,RGB(255,0,0));
 	greenpen.CreatePen(PS_SOLID,1,RGB(0,255,0));
 	bluepen.CreatePen(PS_SOLID,1,RGB(0,0,255));
@@ -355,12 +436,12 @@ BOOL CDrawProgView::PreCreateWindow(CREATESTRUCT& cs)
 	return CScrollView::PreCreateWindow(cs);
 }
 
-
-
 /////////////////////////////////////////////////////////////////////////////
 // CDrawProgView This funtion iterates through all the icons and runs there display functions
 // by passing the View screen handle pDC.
 //  
+/*@todo test the only onece*/
+
 void CDrawProgView::OnDraw(CDC* dc)
 {
 	// Set Frame Caption
@@ -399,7 +480,8 @@ void CDrawProgView::OnDraw(CDC* dc)
 */
 		pDEP->Draw(dc,tempAnimFlag,toggleAnimation);
 	}
-
+	glDEP = pDEP; //temporary testing of openGL 
+	glTempDC = dc;
 	/*
 	if (pDC->IsPrinting()) {
 		pDC->SetMapMode(MM_LOENGLISH);
@@ -429,7 +511,8 @@ void CDrawProgView::OnDraw(CDC* dc)
 	
 	// The following line was in the original. Was removed as it prevented printing
 	/*ReleaseDC(theDC);	*/
-	
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -626,7 +709,6 @@ ConData* CDrawProgView::processComponentDrop(
 	if((blob->className == "TRANSITIONACTION")||(blob->className  == "ENTRYACTION"))
 	{
 
-
 			CBlockNameDialog blockDlg;
 
 			if (blockDlg.DoModal() == IDOK) {
@@ -640,10 +722,8 @@ ConData* CDrawProgView::processComponentDrop(
 				return NULL;
 			}
 
-
 			/*				CLucidStateMachine::AddActionPortsBelow(blob,pDEP,pProject);
 			return blob;
-
 */
 
 	}
@@ -3439,6 +3519,16 @@ void CDrawProgView::OnSaveProject()
 		undoFlag = FALSE;
 		pProject->pProjMData->releaseLock();
 	}
+	/*@todo MIGRATION_ISSUES temporary testing of the 
+	 openGL view using Save button */
+		int temp = 0;
+		wxApp* glApp = new MyApp(); 
+		wxApp::SetInstance(glApp);
+		wxEntryStart(temp, 0);
+		wxTheApp->OnInit();
+		wxTheApp->OnRun();
+		wxTheApp->OnExit();
+		wxEntryCleanup();
 }
 
 void CDrawProgView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) 

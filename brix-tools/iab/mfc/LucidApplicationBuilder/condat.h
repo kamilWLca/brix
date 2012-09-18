@@ -19,6 +19,7 @@
 #include "../common/LucidEnums.h"
 #include "Porting_Classes/INXSize.h"
 #include "Porting_Classes/INXString.h"
+#include "Porting_Classes/INXObject.h"
 
 /*****************************************************************/
 // ConData() contains processing icon data including screen geometry, bitmap
@@ -28,7 +29,7 @@
 // and checking use connection validity.
 /*****************************************************************/
 
-class ConData : public CObject  
+class ConData : public INXObject  
 {
 
 public:
@@ -41,6 +42,8 @@ public:
 	void initBmp(INXPoint _point);
 	void Draw(CDC *);
 	void Draw(CDC *, bool _onlyDrawAnim, int _toggleAnim);
+	void DrawGL(CDC *);
+	void DrawGL(CDC *, bool _onlyDrawAnim, int _toggleAnim);
 	void DrawDescription(CDC* theDC);
 	void DrawTitle(CDC* theDC);
 	void DrawFixed(CDC* theDC);
@@ -118,7 +121,7 @@ public:
 	//INXPoint output[32];
 	//INXPoint trigin[32];
 	//INXPoint trigout[32];
-	UINT inputport_num, outputport_num, startport_num, finishport_num, internalport_num, iParamNum;
+	unsigned int inputport_num, outputport_num, startport_num, finishport_num, internalport_num, iParamNum;
 	Port* inputport[MAXPORTS];	//port object  
 	Port* outputport[MAXPORTS]; //port object  
 	Port* startport[MAXPORTS];					
@@ -127,7 +130,7 @@ public:
 	Parameter* iconParam[MAXPARAMS];
 	Proc_function*  function[MAXFUNCS];
 	INXObjArray<INXString>* funcName;
-	CUIntArray* funcArg;
+	INXObjArray<unsigned int>* funcArg;
 
 	
 // PUT THIS data buffer stuff as another class

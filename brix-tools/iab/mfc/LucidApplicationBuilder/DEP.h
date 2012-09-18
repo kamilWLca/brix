@@ -65,6 +65,8 @@ public:
 	void DeleteTag(INXPOSITION iconPos, int portNum, int portType);
 	void Draw(CDC * pDC);
 	void Draw(CDC * pDC, bool _onlyDrawAnim, int _toggleAnim);
+	void DrawGL(CDC * pDC);
+	void DrawGL(CDC * pDC, bool _onlyDrawAnim, int _toggleAnim);
 	INT_PTR EditControl(INXPOSITION selected); //default is that control is assigned if neq 0
 	int GetFinishLineID(INXObjList* flattened, ConData* otherBlockIcon, ConData* flatBlob, int endNum, HTREEITEM hItem);
 	ConData* GetIconFromID(long int id);

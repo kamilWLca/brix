@@ -92,4 +92,4 @@ private:
 	long m_iHierIdCount;
 };
 
-#endif // !defined(AFX_PROJECT_H__BAE59696_6D9D_4162_AF44_02C956BA846F__INCLUDED_)
+#endif 

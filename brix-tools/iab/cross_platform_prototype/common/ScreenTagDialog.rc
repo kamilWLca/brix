@@ -1,0 +1,88 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "ScreenTagDialogRes.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "ScreenTagDialogRes.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\r\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SCREEN_TAGS DIALOGEX 0, 0, 419, 174
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Lucid Common Tools: Widget Group Management"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,365,20,43,16
+    PUSHBUTTON      "Cancel",IDCANCEL,365,44,43,16
+    PUSHBUTTON      "Add Tag",IDC_SCRNTAG_BUTTON_ADD,365,148,43,16
+    GROUPBOX        "",IDC_STATIC,6,140,407,29
+    EDITTEXT        IDC_SCRNTAG_TAG_EDIT,10,148,102,16,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRNTAG_DESCR_EDIT,116,148,217,16,ES_AUTOHSCROLL
+    PUSHBUTTON      "Delete Tag",IDC_SCRNTAG_BUTTON_DELETE,365,122,43,16,BS_MULTILINE
+    LISTBOX         IDC_DESCR_LIST,116,20,217,119,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LISTBOX         IDC_TAG_LIST,10,20,102,119,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "Tag",IDC_STATIC,6,6,96,12
+    LTEXT           "   Description",IDC_STATIC,114,6,180,12
+    LISTBOX         IDC_USAGE_LIST,337,20,18,119,LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Usage",IDC_STATIC,337,7,24,11
+    PUSHBUTTON      "Edit Tag",IDC_SCRNTAG_EDITDESCRIP_BT,365,101,43,16,BS_MULTILINE
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

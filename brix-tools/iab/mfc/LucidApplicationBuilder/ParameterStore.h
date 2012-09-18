@@ -7,9 +7,10 @@
 using namespace std;
 #include "Porting_Classes/INXString.h"
 #include "Porting_Classes/INXObjArray.h"
+#include "Porting_Classes/INXObject.h"
 class Parameter;
 
-class ParameterStore : public CObject  
+class ParameterStore : public INXObject  
 {
 public:
 	// constructors

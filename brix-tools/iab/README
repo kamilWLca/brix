@@ -1,1 +1,4 @@
 inxware Application Builder code
+
+mfc folder - contains iAB application that is created out of both MFC and wxWidgets
+cross_platform_prototype - contains iAB app that was almost running under LINUX and doesn't have any of MFC code, just standard c++ and wxWidgets. 

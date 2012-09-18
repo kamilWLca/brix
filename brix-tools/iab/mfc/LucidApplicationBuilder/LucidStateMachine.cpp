@@ -11,6 +11,7 @@
 #include "DEP.h"
 #include "BlockOperations.h"
 #include "sizecbar.h"
+#include "Porting_Classes/INXObject.h"
 
 
 #ifdef _DEBUG
@@ -216,7 +217,8 @@ bool CLucidStateMachine::placeComponents(INXPoint point, DEP* pDEP, Project* pPr
 				blob2->init("XFINISH","",  pTransitionIconData->CalculateXPortPosition(FINISHPORT) );
 				blob2->description = pLogicIconData->finishport[0]->description;
 				loaded->AddTail((CObject*) blob2);
-				bo.SaveBlock(filename, loaded);
+				bo.SaveBlock(
+				, loaded);
 */
 
 
@@ -313,14 +315,14 @@ void CLucidStateMachine::AddConditionLogicPortsBelow(ConData* pIconData,  DEP* p
 		ConData *blob = new ConData;
 		blob->init("XOUTPUTB","", pIconData->CalculateXPortPosition(OUTPUTPORT));
 		blob->description = pIconData->outputport[0]->description;
-		loaded->AddTail((CObject*) blob);
+		loaded->AddTail((INXObject*) blob);
 		bo.SaveBlock(filename, loaded);
 
 		
 		ConData *blob2 = new ConData;
 		blob2->init("XFINISH","", pIconData->CalculateXPortPosition(FINISHPORT));
 		blob2->description = pIconData->finishport[0]->description;
-		loaded->AddTail((CObject*) blob2);
+		loaded->AddTail((INXObject*) blob2);
 		bo.SaveBlock(filename, loaded);
 
 
@@ -351,14 +353,14 @@ void CLucidStateMachine::AddActionPortsBelow(ConData* pIconData,DEP* pDEP, Proje
 		ConData *blob = new ConData;
 		blob->init("XSTART","", pIconData->CalculateXPortPosition(STARTPORT));
 		blob->description = pIconData->startport[0]->description;
-		loaded->AddTail((CObject*) blob);
+		loaded->AddTail((INXObject*) blob);
 		bo.SaveBlock(filename, loaded);
 	
 		ConData *blob2 = new ConData;
 	//	loaded = bo.NewBlock(filename);
 		blob2->init("XFINISH","",  pIconData->CalculateXPortPosition(FINISHPORT));
 		blob2->description = pIconData->finishport[0]->description;
-		loaded->AddTail((CObject*) blob2);
+		loaded->AddTail((INXObject*) blob2);
 		bo.SaveBlock(filename, loaded);
 
 

@@ -16,15 +16,16 @@
 /*****************************************************************/
 #include "Porting_Classes/INXObjArray.h"
 #include "Porting_Classes/INXString.h"
+#include "Porting_Classes/INXObject.h"
 
-class ComponentMenuItem : public CObject
+class ComponentMenuItem : public INXObject
 {
 public:
 	ComponentMenuItem(ComponentMenuItem * m_parent);
 	~ComponentMenuItem(void);
 
 	INXString m_name; // the menu item name
-	INXObjArray<CObject *> m_listOfSubMenuItems; // array of other sub menus of this menu
+	INXObjArray<INXObject *> m_listOfSubMenuItems; // array of other sub menus of this menu
 	ComponentMenuItem * m_parent; // parent of this menu item, null if root menu item
 
 	int m_priority;	// this is a non-unique number that tells us where the menu item should appear in the list

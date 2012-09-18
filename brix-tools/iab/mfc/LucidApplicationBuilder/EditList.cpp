@@ -8,6 +8,7 @@
 #include "MainFrm.h"
 #include "FileOperations.h"
 #include "BlockOperations.h"
+#include "Porting_Classes/INXObject.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -87,7 +88,7 @@ INXObjList* EditList::LoadPaste(INXString Info) {
 			if (!pasteList) {
 				pasteList = new INXObjList;
 			}
-			pasteList->AddTail((CObject*) blob);
+			pasteList->AddTail((INXObject*) blob);
 		}
 	}
 
@@ -216,7 +217,7 @@ INXObjList* EditList::LoadTemp() {
 			
 			if(blob)
 			{	blob->Load(&datafile);
-				temp->AddTail((CObject*) blob);
+				temp->AddTail((INXObject*) blob);
 				id = blob->identnum;
 			}
 			else

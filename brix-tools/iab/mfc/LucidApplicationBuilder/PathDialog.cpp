@@ -347,7 +347,7 @@ int CPathDialog::MakeSurePathExists(LPCTSTR lpPath)
 //return 1: project is empty
 int CPathDialog::ValidProject(LPCTSTR lpProject)
 {
-	if ((INXString)lpProject == "") {
+	if (lpProject == "") {
 		AfxMessageBox("You must specify a project name.");
 		return 1;
 	}

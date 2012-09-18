@@ -10,7 +10,6 @@
 #include "stdafx.h"
 #include "DrawProg.h"
 
-
 #include "MainFrm.h"
 
 #ifdef _DEBUG
@@ -285,19 +284,16 @@ void CMainFrame::OnUpdateViewPalette(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(m_cFuncBlockBar.IsVisible());
 }
 
-
 void  CMainFrame::updateFunctionBlockBar()
 {
 	m_cFuncBlockBar.loadContents();
 }
 
-void CMainFrame::OnClose() 
+void CMainFrame::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
 	exiting = TRUE;
-
 	CMDIFrameWnd::OnClose();
-
 }
 
 /*
@@ -377,6 +373,7 @@ void CMainFrame::setFrameCaption()
 	} else {
 		m_pMainWnd->SetWindowTextA(LAB_APP_NAME + NO_PROJECT_WARNING);
 	}
-
 	//CDialog::OnOK();
 }
+
+			
